@@ -46,19 +46,6 @@ h1 {
     width: 100%;
 }
 
-#cards-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    max-width: 100px;
-    margin: 2 auto;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-}
-
 .card {
     display: grid;
     grid-column-start: 4;
@@ -84,4 +71,28 @@ h1 {
 .card-back {
   transform: rotateY(180deg);
   padding: 1rem;
+}
+
+
+#cards-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.card {
+    width: 100%;
+    padding-top: 100%;
+    background-color: #ccc;
+    border-radius: 5px;
+    position: relative;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.card:hover {
+    background-color: #bbb;
 }
