@@ -5,8 +5,8 @@ C'est un jeu dont l'objectif est de collecter toutes les paires de cartes sur le
 # Comment jouer
 Cloner le projet.
 
-lancer index.html dans un navigateur internet
-ensuite vous arriverez dans un menu intuitif où vous pourrez prochainement changer votre deck, en fonction de vos goûts, et sélectionner la difficulté selon la mémoire que vous possédez.
+Lancer index.html dans un navigateur internet
+Vous arriverez dans un menu intuitif où vous pourrez prochainement changer votre deck, en fonction de vos goûts, et sélectionner la difficulté selon la mémoire que vous possédez.
 
 C'est ensuite en cliquant sur le bouton "Jouer" que le jeu se lance dans l'univers de votre choix.
 Pour jouer, cliquer sur une première carte enclenchera le timer pour chronométrer votre partie et ainsi rassemblez toutes les paires en ayant le meilleur score.
