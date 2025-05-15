@@ -15,11 +15,21 @@ const cards = document.querySelectorAll(".card");
 let hasLaunched = false;
 let score = 0;
 let moves = 0;
+let selectedCard;
 
 /*---------------Gameplay---------------*/
 
 const selectCard = (card) => {
-  console.log(`clicked ${card.id}`);
+  switch (selectedCard) {
+    case undefined:
+      selectedCard = card;
+      break;
+    case selectedCard.pair === card.pair:
+      //win
+      break;
+    default:
+      //lose
+  }
 };
 
 cards.forEach((card) => {
@@ -34,6 +44,7 @@ cards.forEach((card) => {
 const resetGame = () => {
   score = 0;
   moves = 0;
+  selectedCard = undefined;
   cardsContainer.innerHTML = "";
 };
 
