@@ -16,29 +16,25 @@ const theme = "pokemon";
 let hasLaunched = false;
 let score = 0;
 let moves = 0;
-let selectedCard;
+let selectedCard = undefined;
 
 /*---------------Gameplay---------------*/
 
-const selectCard = (card) => {
+const selectCard = (cardElement) => {
+  // const card = get corresponding card from cards
   switch (selectedCard) {
     case undefined:
       selectedCard = card;
       break;
     case selectedCard.pair === card.pair:
-      //win
+      console.log("win");
+      selectedCard = undefined;
       break;
     default:
-      //lose
+      console.log("lose");
+      selectedCard = undefined;
   }
 };
-
-cards.forEach((card) => {
-  card.addEventListener("click", (event) => {
-    event.preventDefault();
-    selectCard(card);
-});
-});
 
 /*---------------Game-Launcher---------------*/
 
@@ -83,7 +79,6 @@ const generateCards = (x, y) => {
 
 const printCards = () => {
   for (let i = 0; i < cards.length; i++) {
-    console.log(cards);
     cardsContainer.innerHTML += `<img id="${cards[i].id}" class="card" src="${cards[i].src}">`;
   }
 };
@@ -98,3 +93,11 @@ const launchGame = () => {
 replayBtn.addEventListener("click", launchGame);
 
 launchGame();
+
+/*need to listen to HTML object, not the card list*/
+document.querySelectorAll(".card").forEach((card) => {
+  card.addEventListener("click", (event) => {
+    event.preventDefault();
+    selectCard(card);
+});
+});
