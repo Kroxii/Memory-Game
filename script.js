@@ -10,7 +10,8 @@ const chrono = document.getElementById("chrono");
 const moveCounter = document.getElementById("move-counter");
 const cardsContainer = document.getElementById("cards-container");
 const replayBtn = document.getElementById("replay-btn");
-const cards = document.querySelectorAll(".card");
+let cards = [];
+const theme = "pokemon";
 
 let hasLaunched = false;
 let score = 0;
@@ -46,11 +47,46 @@ const resetGame = () => {
   moves = 0;
   selectedCard = undefined;
   cardsContainer.innerHTML = "";
+  cards = [];
 };
 
-const generateCards = (x, y) => {};
+const shuffle = () => {
+  for (let i = cards.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const temp = cards[i];
+    cards[i] = cards[j];
+    cards[j] = temp;
+  }
+};
 
-const printCards = () => {};
+const generateCards = (x, y) => {
+  const totalCards = x * y;
+  let paireValue = 0;
+  let incr = false;
+
+  for (let i = 0; i < totalCards; i++) {
+    if (incr) {
+      paireValue++;
+      incr = false;
+    } else if (i !== 0) {
+      incr = true;
+    }
+    const card = {
+      id: `card-${i}`,
+      pair: paireValue,
+      src: `assets/cards/${theme}/${paireValue + 1}.png`,
+    };
+    cards.push(card);
+  }
+  shuffle();
+};
+
+const printCards = () => {
+  for (let i = 0; i < cards.length; i++) {
+    console.log(cards);
+    cardsContainer.innerHTML += `<img id="${cards[i].id}" class="card" src="${cards[i].src}">`;
+  }
+};
 
 const launchGame = () => {
   if (hasLaunched) resetGame();
