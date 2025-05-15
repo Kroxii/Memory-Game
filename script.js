@@ -43,7 +43,6 @@ const shuffle = () => {
     cards[i] = cards[j];
     cards[j] = temp;
   }
-  console.log(cards);
 };
 
 const generateCards = (x, y) => {
@@ -59,17 +58,21 @@ const generateCards = (x, y) => {
       incr = true;
     }
     const card = {
-      id: i,
+      id: `card-${i}`,
       pair: paireValue,
-      src: `assets/card/${theme}/${paireValue}`,
+      src: `assets/cards/${theme}/${paireValue + 1}.png`,
     };
     cards.push(card);
   }
-  console.log(cards);
-  cards = shuffle();
+  shuffle();
 };
 
-const printCards = () => {};
+const printCards = () => {
+  for (let i = 0; i < cards.length; i++) {
+    console.log(cards);
+    cardsContainer.innerHTML += `<img id="${cards[i].id}" class="card" src="${cards[i].src}">`;
+  }
+};
 
 const launchGame = () => {
   if (hasLaunched) resetGame();
