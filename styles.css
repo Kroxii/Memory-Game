@@ -47,7 +47,16 @@ h1 {
 }
 
 #cards-container {
-    display: flex;
+    display: grid;
+    grid-column-start: 4;
+    grid-row-start: 4;
     flex-wrap: wrap;
     justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 100px;
+    margin: 2 auto;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
 }
