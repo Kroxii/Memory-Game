@@ -3,7 +3,7 @@ Memory game ?
 C'est un jeu dont l'objectif est de collecter toutes les paires de cartes sur le plateau et grâce à votre mémoire infaillible battre tous les records.
 
 # Comment jouer
-Cloner le projet: git clone https://github.com/4wge/Memory-game.git
+Cloner le projet.
 
 lancer index.html dans un navigateur internet
 ensuite vous arriverez dans un menu intuitif où vous pourrez prochainement changer votre deck, en fonction de vos goûts, et sélectionner la difficulté selon la mémoire que vous possédez.
