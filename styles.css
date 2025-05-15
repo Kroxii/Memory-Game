@@ -60,3 +60,17 @@ h1 {
     border: 1px solid #ccc;
     border-radius: 10px;
 }
+
+.card {
+    width: 100px;
+    height: 150px;
+    margin: 5px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    cursor: pointer;
+}
