@@ -14,7 +14,7 @@ Pour jouer, cliquer sur une première carte enclenchera le timer pour chronomét
 En cours de partie, pour retourner au menu principal ou en recommencer une nouvelle, cliquez sur le panneau de score qui affichera un menu.
 
 # Lancer le jeu
->>> lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum 
+>>> https://kroxii.github.io/Memory-Game/
 
 # Particularité du projet
 - Le jeu mélange aléatoirement les cartes.
