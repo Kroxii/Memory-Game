@@ -10,7 +10,7 @@ const chrono = document.getElementById("chrono");
 const moveCounter = document.getElementById("move-counter");
 const cardsContainer = document.getElementById("cards-container");
 const replayBtn = document.getElementById("replay-btn");
-const cards = [];
+const cards = document.querySelectorAll(".card");
 
 let hasLaunched = false;
 let score = 0;
@@ -18,12 +18,15 @@ let moves = 0;
 
 /*---------------Gameplay---------------*/
 
-const selectCard = () => {
-  //console.log('clicked');
+const selectCard = (card) => {
+  console.log(`clicked ${card.id}`);
 };
 
 cards.forEach((card) => {
-  card.addEventListener("click", selectCard);
+  card.addEventListener("click", (event) => {
+    event.preventDefault();
+    selectCard(card);
+});
 });
 
 /*---------------Game-Launcher---------------*/
@@ -32,17 +35,15 @@ const resetGame = () => {
   score = 0;
   moves = 0;
   cardsContainer.innerHTML = "";
-}
+};
 
 const generateCards = (x, y) => {};
 
 const printCards = () => {};
 
 const launchGame = () => {
-  if (hasLaunched)
-    resetGame();
-  else
-    hasLaunched = true;
+  if (hasLaunched) resetGame();
+  else hasLaunched = true;
   generateCards(difficultySettings.x, difficultySettings.y);
   printCards();
 };
