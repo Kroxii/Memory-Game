@@ -15,7 +15,13 @@
       <button id="settings-btn">settings</button>
       <ul id="settings-scroll" class="hidden">
         <li id="theme-settings"></li>
-        <li id="difficulty-settings"></li>
+        <li id="difficulty-settings">
+          <select id="difficulty-select">
+            <option class="difficulty-option">easy</option>
+            <option class="difficulty-option">normal</option>
+            <option class="difficulty-option">hard</option>
+          </select>
+        </li>
       </ul>
     </header>
     <main>
@@ -26,10 +32,10 @@
           <li id="move-counter">Moves: <span class="number-span">0</span></li>
         </ul>
         <div id="cards-container">
-            <div id="c1" class="card"></div>
-            <div id="c2" class="card"></div>
-            <div id="c3" class="card"></div>
-            <div id="c4" class="card"></div>
+          <div id="c1" class="card"></div>
+          <div id="c2" class="card"></div>
+          <div id="c3" class="card"></div>
+          <div id="c4" class="card"></div>
         </div>
         <button id="replay-btn">Replay</button>
       </div>
