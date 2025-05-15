@@ -47,9 +47,7 @@ h1 {
 }
 
 #cards-container {
-    display: grid;
-    grid-column-start: 4;
-    grid-row-start: 4;
+    display: flex;
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
@@ -62,8 +60,11 @@ h1 {
 }
 
 .card {
-    width: 100px;
-    height: 150px;
+    display: grid;
+    grid-column-start: 4;
+    grid-row-start: 4;
+    width: 50px;
+    height: 100px;
     margin: 5px;
     background-color: #fff;
     border-radius: 10px;
@@ -71,6 +72,4 @@ h1 {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 24px;
-    cursor: pointer;
 }
