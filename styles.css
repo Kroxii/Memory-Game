@@ -37,7 +37,6 @@ h1 {
 }
 
 .card {
-    display: grid;
     grid-column-start: 4;
     grid-row-start: 4;
     width: 50px;
