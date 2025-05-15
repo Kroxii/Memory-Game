@@ -12,25 +12,41 @@ const cardsContainer = document.getElementById("cards-container");
 const replayBtn = document.getElementById("replay-btn");
 const cards = [];
 
+let hasLaunched = false;
+let score = 0;
+let moves = 0;
+
+/*---------------Gameplay---------------*/
+
+const selectCard = () => {
+  //console.log('clicked');
+};
+
+cards.forEach((card) => {
+  card.addEventListener("click", selectCard);
+});
+
 /*---------------Game-Launcher---------------*/
+
+const resetGame = () => {
+  score = 0;
+  moves = 0;
+  cardsContainer.innerHTML = "";
+}
 
 const generateCards = (x, y) => {};
 
 const printCards = () => {};
 
 const launchGame = () => {
-  // cardsContainer.innerHTML = "";
+  if (hasLaunched)
+    resetGame();
+  else
+    hasLaunched = true;
   generateCards(difficultySettings.x, difficultySettings.y);
   printCards();
 };
 
 replayBtn.addEventListener("click", launchGame);
+
 launchGame();
-
-/*---------------Gameplay---------------*/
-
-const selectCard = () => {};
-
-cards.forEach((card) => {
-  card.addEventListener("click", selectCard);
-});
