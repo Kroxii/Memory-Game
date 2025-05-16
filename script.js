@@ -1,4 +1,3 @@
-let difficultySettings = { x: 4, y: 4 };
 const numberSpan = document.querySelectorAll(".number-span");
 const highestScore = document.getElementById("highest-score");
 const settingsBtn = document.getElementById("settings-btn");
@@ -10,26 +9,33 @@ const chrono = document.getElementById("chrono");
 const moveCounter = document.getElementById("move-counter");
 const cardsContainer = document.getElementById("cards-container");
 const replayBtn = document.getElementById("replay-btn");
-let cards = [];
 const theme = "pokemon";
-
 let hasLaunched = false;
+let cardsNodeList;
+
+let difficultySettings = { x: 4, y: 4 };
+let numberOfPairs = difficultySettings.x * difficultySettings.y / 2;
+
+let numberOfFounds = 0;
+let selectedCard = undefined;
+let scoreMultiplier = 10;
+
+let cards = [];
 let score = 0;
 let moves = 0;
-let cardsNodeList;
-let selectedCard = undefined;
 
 /*---------------Gameplay---------------*/
 
 const endRound = (hasWon, selectedCards) => {
-  
-
   switch (hasWon) {
     case true:
       selectedCards.forEach(card => card.isFound = true);
+      score += 5 * scoreMultiplier;
+      numberOfFounds++;
       console.log('win');
       break;
     default:
+      if (scoreMultiplier > 1) scoreMultiplier = scoreMultiplier--;
       console.log('lose');
   }
   selectedCard = undefined;
@@ -42,6 +48,10 @@ const selectCard = (id) => {
   else if (!selectedCard) selectedCard = card;
   else if (selectedCard.id !== card.id)
     endRound(selectedCard.pair === card.pair, [selectedCard, card]);
+
+  moves++;
+  if (numberOfFounds === numberOfPairs)
+    console.log("ggwp");
 };
 
 /*---------------Game-Launcher---------------*/
@@ -49,9 +59,12 @@ const selectCard = (id) => {
 const resetGame = () => {
   score = 0;
   moves = 0;
-  selectedCard = undefined;
-  cardsContainer.innerHTML = "";
+  numberOfFounds = 0;
+  scoreMultiplier = 10;
   cards = [];
+  cardsContainer.innerHTML = "";
+  selectedCard = undefined;
+  cardsNodeList = undefined;
 };
 
 const shuffle = () => {
