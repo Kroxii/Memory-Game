@@ -24,6 +24,40 @@ let cards = [];
 let score = 0;
 let moves = 0;
 
+/*---------------Chrono---------------*/
+
+const minutes = document.getElementById("minutes");
+const seconds = document.getElementById("seconds");
+let totalSeconds = 0;
+let timerStart = false;
+let timerInterval = null;
+
+const start = (timer) => {
+  return timer.toString().padStart(2, "0");
+};
+
+const setTimer = () => {
+  totalSeconds++;
+  seconds.textContent = start(totalSeconds % 60);
+  minutes.textContent = start(Math.floor(totalSeconds / 60));
+};
+
+const cardClick = () => {
+  if (!timerStart) {
+    timerStart = true;
+    timerInterval = setInterval(setTimer, 1000);
+  }
+};
+
+const resetTimer = () => {
+  clearInterval(timerInterval);
+  timerStart = false;
+  totalSeconds = 0;
+  seconds.textContent = "00";
+  minutes.textContent = "00";
+  timerInterval = null;
+};
+
 /*---------------Gameplay---------------*/
 
 const endGame = () => {
