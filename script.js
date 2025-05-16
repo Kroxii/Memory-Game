@@ -14,7 +14,7 @@ let hasLaunched = false;
 let cardsNodeList;
 
 let difficultySettings = { x: 4, y: 4 };
-let numberOfPairs = difficultySettings.x * difficultySettings.y / 2;
+let numberOfPairs = (difficultySettings.x * difficultySettings.y) / 2;
 
 let numberOfFounds = 0;
 let selectedCard = undefined;
@@ -67,16 +67,24 @@ const endGame = () => {
 const endRound = (hasWon, selectedCards) => {
   switch (hasWon) {
     case true:
-      selectedCards.forEach(card => card.isFound = true);
+      selectedCards.forEach((card) => (card.isFound = true));
       score += 5 * scoreMultiplier;
       numberOfFounds++;
-      console.log('win');
+      console.log("win");
       break;
     default:
       if (scoreMultiplier > 1) scoreMultiplier = scoreMultiplier--;
-      console.log('lose');
+      console.log("lose");
   }
   selectedCard = undefined;
+};
+
+const updateGameInfos = () => {
+  const scoreSpan = document.getElementById("current-score-span");
+  const movesSpan = document.getElementById("moves-span");
+
+  scoreSpan.textContent = score;
+  movesSpan.textContent = moves;
 };
 
 const selectCard = (cardEl) => {
@@ -85,16 +93,14 @@ const selectCard = (cardEl) => {
   if (!card) return;
   else if (!selectedCard) {
     selectedCard = card;
-    cardEl.classList.add('flip');
-  }
-  else if (selectedCard.id !== card.id) {
-    cardEl.classList.add('flip');
+    cardEl.classList.add("flip");
+  } else if (selectedCard.id !== card.id) {
+    cardEl.classList.add("flip");
     endRound(selectedCard.pair === card.pair, [selectedCard, card]);
   }
 
   moves++;
-  if (numberOfFounds === numberOfPairs)
-    endGame();
+  if (numberOfFounds === numberOfPairs) endGame();
   updateGameInfos();
 };
 
@@ -109,8 +115,9 @@ const resetGame = () => {
   cardsContainer.innerHTML = "";
   selectedCard = undefined;
   cardsNodeList = undefined;
-  numberOfPairs = difficultySettings.x * difficultySettings.y / 2;
+  numberOfPairs = (difficultySettings.x * difficultySettings.y) / 2;
   resetTimer();
+  updateGameInfos();
 };
 
 const shuffle = () => {
@@ -162,9 +169,9 @@ const listenCards = () => {
     cardEl.addEventListener("click", (event) => {
       event.preventDefault();
       selectCard(cardEl);
-    })
+    });
   });
-}
+};
 
 const launchGame = () => {
   if (hasLaunched) resetGame();
