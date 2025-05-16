@@ -20,9 +20,114 @@ let numberOfFounds = 0;
 let selectedCard = undefined;
 let scoreMultiplier = 10;
 
-let cards = [];
+//let cards = [];
 let score = 0;
 let moves = 0;
+
+class CardList {
+  constructor(size){
+    this.size = size,
+    this.list = []
+  }
+
+  generateList(){
+    let paireValue = 0;
+    let incr = false;
+  
+    for (let i = 0; i < this.size; i++) {
+      if (incr) {
+        paireValue++;
+        incr = false;
+      } else if (i !== 0) {
+        incr = true;
+      }
+      this.list.push(new Card(i, paireValue));
+    }
+  }
+
+  shuffle() {
+    for (let i = this.list.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      const temp = this.list[i];
+      this.list[i] = this.list[j];
+      this.list[j] = temp;
+    }
+  }
+
+  display() {
+    for (let i = 0; i < this.list.length; i++) {
+      cardsContainer.innerHTML += `
+      <div id="${this.list[i].id}" class="card">
+        <img class="front-face" src="${this.list[i].src}">
+        <img class="back-face" src="assets/back/back.jpg">
+      </div>`;
+      this.list[i].getHtmlElement();
+    }
+  }
+
+  listen() {
+    this.list.forEach((card) => {
+      console.log(card);
+      card.htmlElement.addEventListener('click', (event) => {
+        event.preventDefault();
+        console.log('detect');
+        card.select();
+      })
+    });
+  }
+}
+
+class Card {
+  constructor(id, pair) {
+    this.id = `card-${id}`,
+    this.pair = pair,
+    this.src = `assets/cards/${theme}/${pair + 1}.png`,
+    this.htmlElement = undefined,
+    this.isFound = false,
+    this.isFlip = false
+  };
+
+  getHtmlElement(){
+    this.htmlElement = document.getElementById(this.id);
+  }
+
+  flip(){
+    switch (this.isFlip) {
+      case true:
+        this.isFlip = false;
+        this.htmlElement.classList.remove('flip');
+        break;
+      default:
+        this.isFlip = true;
+        this.htmlElement.classList.add('flip');
+    }
+  }
+
+  endRound(hasWon, other) {
+    switch (hasWon) {
+      case true:
+        this.htmlElement.removeEventListener('click');
+        other.htmlElement.removeEventListener('click');
+        win();
+        break;
+      default:
+        this.flip();
+        other.flip();
+        lose();
+    }
+  }
+
+  select(){
+    console.log('click');
+    if (!this.isFound) {
+      if (!selectedCard) selectedCard = this;
+      else if (selectedCard !== this)
+        this.endRound(selectedCard.pair === this.pair, selectedCard);
+    }
+  }
+};
+
+const cardList = new CardList(difficultySettings.x * difficultySettings.y);
 
 /*---------------Chrono---------------*/
 
@@ -63,6 +168,17 @@ const resetTimer = () => {
 const endGame = () => {
   console.log("ggwp");
 };
+
+const win = () => {
+  score += 5 * scoreMultiplier;
+  numberOfFounds++;
+  console.log('win');
+}
+
+const lose = () => {
+  scoreMultiplier--;
+  console.log('lose');
+}
 
 const endRound = (hasWon, selectedCards) => {
   switch (hasWon) {
@@ -134,12 +250,9 @@ const generateCards = (x, y) => {
     } else if (i !== 0) {
       incr = true;
     }
-    const card = {
-      id: `card-${i}`,
-      pair: paireValue,
-      isFound: false,
-      src: `assets/cards/${theme}/${paireValue + 1}.png`,
-    };
+    const card = new Card( `card-${i}`,
+      paireValue,
+      `assets/cards/${theme}/${paireValue + 1}.png`);
     cards.push(card);
   }
   shuffle();
@@ -154,7 +267,7 @@ const printCards = () => {
     </div>`;
   }
 };
-
+/*
 const listenCards = () => {
   cardsNodeList = document.querySelectorAll(".card");
 
@@ -164,14 +277,28 @@ const listenCards = () => {
       selectCard(cardEl);
     })
   });
+}*/
+
+const listenCards = () => {
+  cardList.list.forEach((card) => {
+    card.htmlElement.addEventListener('click', (event) => {
+      event.preventDefault();
+      console.log('detect');
+      card.select();
+    })
+  });
 }
 
 const launchGame = () => {
   if (hasLaunched) resetGame();
   else hasLaunched = true;
   cardClick();
-  generateCards(difficultySettings.x, difficultySettings.y);
-  printCards();
+  cardList.generateList();
+  cardList.shuffle();
+  cardList.display();
+  //cardList.listen();
+  //generateCards(difficultySettings.x, difficultySettings.y);
+  //printCards();
   listenCards();
 };
 
