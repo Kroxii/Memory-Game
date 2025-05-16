@@ -16,24 +16,32 @@ const theme = "pokemon";
 let hasLaunched = false;
 let score = 0;
 let moves = 0;
+let cardsNodeList;
 let selectedCard = undefined;
 
 /*---------------Gameplay---------------*/
 
-const selectCard = (cardElement) => {
-  // const card = get corresponding card from cards
-  switch (selectedCard) {
-    case undefined:
-      selectedCard = card;
-      break;
-    case selectedCard.pair === card.pair:
-      console.log("win");
-      selectedCard = undefined;
+const endRound = (hasWon, selectedCards) => {
+  
+
+  switch (hasWon) {
+    case true:
+      selectedCards.forEach(card => card.isFound = true);
+      console.log('win');
       break;
     default:
-      console.log("lose");
-      selectedCard = undefined;
+      console.log('lose');
   }
+  selectedCard = undefined;
+}
+
+const selectCard = (id) => {
+  const card = cards.find((card) => !card.isFound && card.id === id);
+
+  if (!card) return;
+  else if (!selectedCard) selectedCard = card;
+  else if (selectedCard.id !== card.id)
+    endRound(selectedCard.pair === card.pair, [selectedCard, card]);
 };
 
 /*---------------Game-Launcher---------------*/
@@ -70,6 +78,7 @@ const generateCards = (x, y) => {
     const card = {
       id: `card-${i}`,
       pair: paireValue,
+      isFound: false,
       src: `assets/cards/${theme}/${paireValue + 1}.png`,
     };
     cards.push(card);
@@ -83,21 +92,24 @@ const printCards = () => {
   }
 };
 
+const listenCards = () => {
+  cardsNodeList = document.querySelectorAll(".card");
+
+  cardsNodeList.forEach((card) => {
+    card.addEventListener("click", (event) => {
+      event.preventDefault();
+      selectCard(card.id);
+    })});
+}
+
 const launchGame = () => {
   if (hasLaunched) resetGame();
   else hasLaunched = true;
   generateCards(difficultySettings.x, difficultySettings.y);
   printCards();
+  listenCards();
 };
 
 replayBtn.addEventListener("click", launchGame);
 
 launchGame();
-
-/*need to listen to HTML object, not the card list*/
-document.querySelectorAll(".card").forEach((card) => {
-  card.addEventListener("click", (event) => {
-    event.preventDefault();
-    selectCard(card);
-});
-});
