@@ -95,6 +95,7 @@ const selectCard = (cardEl) => {
   moves++;
   if (numberOfFounds === numberOfPairs)
     endGame();
+  updateGameInfos();
 };
 
 /*---------------Game-Launcher---------------*/
