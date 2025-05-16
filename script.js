@@ -26,16 +26,6 @@ let moves = 0;
 
 /*---------------Gameplay---------------*/
 
-const incrMoves = () => {
-  moves++;
-  moveCounter.querySelector(".moves-span").textContent = moves;
-};
-
-const incrScore = () => {
-  score++;
-  currentScore.querySelector("current-score-span").textContent = score;
-};
-
 const endGame = () => {
   console.log("ggwp");
 };
@@ -79,6 +69,7 @@ const resetGame = () => {
   cardsContainer.innerHTML = "";
   selectedCard = undefined;
   cardsNodeList = undefined;
+  numberOfPairs = difficultySettings.x * difficultySettings.y / 2;
 };
 
 const shuffle = () => {
