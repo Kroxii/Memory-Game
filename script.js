@@ -109,6 +109,7 @@ const resetGame = () => {
   selectedCard = undefined;
   cardsNodeList = undefined;
   numberOfPairs = difficultySettings.x * difficultySettings.y / 2;
+  resetTimer();
 };
 
 const shuffle = () => {
@@ -167,6 +168,7 @@ const listenCards = () => {
 const launchGame = () => {
   if (hasLaunched) resetGame();
   else hasLaunched = true;
+  cardClick();
   generateCards(difficultySettings.x, difficultySettings.y);
   printCards();
   listenCards();
