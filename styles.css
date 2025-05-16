@@ -55,32 +55,6 @@ h1 {
 
 /* Cards Container */
 #cards-container {
-<<<<<<< HEAD
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(4, 1fr);
-    gap: 10px;
-    width: 100%;
-    max-width: 600px;
-    margin: 0 auto;
-}
-
-#cards-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-.card {
-    width: 100px;
-    height: 100px;
-    border: 1px solid black;
-}
-
-.card:hover {
-    scale: 2;
-}
-=======
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows: repeat(4, 1fr);
@@ -89,4 +63,3 @@ h1 {
   max-width: 600px;
   margin: 0 auto;
 }
->>>>>>> main
