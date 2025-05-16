@@ -34,18 +34,6 @@ h1 {
   color: #333;
 }
 
-/* Game Container */
-#game-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  width: 100%;
-  max-width: 600px;
-  margin: 0 auto;
-}
-
 /* Game Settings */
 #game-settings {
   display: flex;
@@ -64,7 +52,7 @@ h1 {
   margin: 0 auto;
 }
 
-.game-container {
+#game-container {
   width: 640px;
   height: 640px;
   margin: auto;

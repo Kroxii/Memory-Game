@@ -45,13 +45,18 @@ const endRound = (hasWon, selectedCards) => {
   selectedCard = undefined;
 };
 
-const selectCard = (id) => {
-  const card = cards.find((card) => !card.isFound && card.id === id);
+const selectCard = (cardEl) => {
+  const card = cards.find((card) => !card.isFound && card.id === cardEl.id);
 
   if (!card) return;
-  else if (!selectedCard) selectedCard = card;
-  else if (selectedCard.id !== card.id)
+  else if (!selectedCard) {
+    selectedCard = card;
+    cardEl.classList.add('flip');
+  }
+  else if (selectedCard.id !== card.id) {
+    cardEl.classList.add('flip');
     endRound(selectedCard.pair === card.pair, [selectedCard, card]);
+  }
 
   moves++;
   if (numberOfFounds === numberOfPairs)
@@ -106,17 +111,21 @@ const generateCards = (x, y) => {
 
 const printCards = () => {
   for (let i = 0; i < cards.length; i++) {
-    cardsContainer.innerHTML += `<img id="${cards[i].id}" class="card" src="${cards[i].src}">`;
+    cardsContainer.innerHTML += `
+    <div id="${cards[i].id}" class="card">
+      <img class="front-face" src="${cards[i].src}">
+      <img class="back-face" src="assets/back/back.jpg">
+    </div>`;
   }
 };
 
 const listenCards = () => {
   cardsNodeList = document.querySelectorAll(".card");
 
-  cardsNodeList.forEach((card) => {
-    card.addEventListener("click", (event) => {
+  cardsNodeList.forEach((cardEl) => {
+    cardEl.addEventListener("click", (event) => {
       event.preventDefault();
-      selectCard(card.id);
+      selectCard(cardEl);
     })
   });
 }
