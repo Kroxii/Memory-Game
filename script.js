@@ -19,6 +19,16 @@ let moves = 0;
 
 /*---------------Gameplay---------------*/
 
+const incrMoves = () => {
+  moves++;
+  moveCounter.querySelector(".moves-span").textContent = moves;
+};
+
+const incrScore = () => {
+  score++;
+  currentScore.querySelector("current-score-span").textContent = score;
+};
+
 const selectCard = () => {
   //console.log('clicked');
 };
