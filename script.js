@@ -26,6 +26,10 @@ let moves = 0;
 
 /*---------------Gameplay---------------*/
 
+const endGame = () => {
+  console.log("ggwp");
+};
+
 const endRound = (hasWon, selectedCards) => {
   switch (hasWon) {
     case true:
@@ -39,7 +43,7 @@ const endRound = (hasWon, selectedCards) => {
       console.log('lose');
   }
   selectedCard = undefined;
-}
+};
 
 const selectCard = (id) => {
   const card = cards.find((card) => !card.isFound && card.id === id);
@@ -51,7 +55,7 @@ const selectCard = (id) => {
 
   moves++;
   if (numberOfFounds === numberOfPairs)
-    console.log("ggwp");
+    endGame();
 };
 
 /*---------------Game-Launcher---------------*/
@@ -112,7 +116,8 @@ const listenCards = () => {
     card.addEventListener("click", (event) => {
       event.preventDefault();
       selectCard(card.id);
-    })});
+    })
+  });
 }
 
 const launchGame = () => {
