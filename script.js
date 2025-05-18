@@ -14,7 +14,7 @@ let hasLaunched = false;
 let cardsNodeList;
 
 let difficultySettings = { x: 4, y: 4 };
-let numberOfPairs = difficultySettings.x * difficultySettings.y / 2;
+let numberOfPairs = (difficultySettings.x * difficultySettings.y) / 2;
 
 let numberOfFounds = 0;
 let selectedCard = undefined;
@@ -67,34 +67,58 @@ const endGame = () => {
 const endRound = (hasWon, selectedCards) => {
   switch (hasWon) {
     case true:
-      selectedCards.forEach(card => card.isFound = true);
+      selectedCards.forEach((card) => (card.isFound = true));
       score += 5 * scoreMultiplier;
       numberOfFounds++;
-      console.log('win');
+      console.log("win");
       break;
     default:
       if (scoreMultiplier > 1) scoreMultiplier = scoreMultiplier--;
-      console.log('lose');
+      console.log("lose");
   }
   selectedCard = undefined;
 };
 
+const updateGameInfos = () => {
+  const scoreSpan = document.getElementById("current-score-span");
+  const movesSpan = document.getElementById("moves-span");
+
+  scoreSpan.textContent = score;
+  movesSpan.textContent = moves;
+};
+
+  // Lance le chrono au tout premier clic
 const selectCard = (cardEl) => {
+  if (!timerStart) {
+    cardClick();
+  }
+
   const card = cards.find((card) => !card.isFound && card.id === cardEl.id);
 
   if (!card) return;
   else if (!selectedCard) {
     selectedCard = card;
-    cardEl.classList.add('flip');
-  }
-  else if (selectedCard.id !== card.id) {
-    cardEl.classList.add('flip');
-    endRound(selectedCard.pair === card.pair, [selectedCard, card]);
+    cardEl.classList.add("flip");
+  } else if (selectedCard.id !== card.id) {
+    cardEl.classList.add("flip");
+    const previousCardEl = document.getElementById(selectedCard.id);
+    const isPair = selectedCard.pair === card.pair;
+    endRound(isPair, [selectedCard, card]);
+
+    if (!isPair) {
+      // Désactive temporairement les clics
+      cardsNodeList.forEach(el => el.style.pointerEvents = "none");
+      setTimeout(() => {
+        cardEl.classList.remove("flip");
+        previousCardEl.classList.remove("flip");
+        // Réactive les clics
+        cardsNodeList.forEach(el => el.style.pointerEvents = "");
+      }, 1000); // 1 seconde avant de retourner les cartes
+    }
   }
 
   moves++;
-  if (numberOfFounds === numberOfPairs)
-    endGame();
+  if (numberOfFounds === numberOfPairs) endGame();
   updateGameInfos();
 };
 
@@ -109,8 +133,9 @@ const resetGame = () => {
   cardsContainer.innerHTML = "";
   selectedCard = undefined;
   cardsNodeList = undefined;
-  numberOfPairs = difficultySettings.x * difficultySettings.y / 2;
+  numberOfPairs = (difficultySettings.x * difficultySettings.y) / 2;
   resetTimer();
+  updateGameInfos();
 };
 
 const shuffle = () => {
@@ -162,14 +187,13 @@ const listenCards = () => {
     cardEl.addEventListener("click", (event) => {
       event.preventDefault();
       selectCard(cardEl);
-    })
+    });
   });
-}
+};
 
 const launchGame = () => {
   if (hasLaunched) resetGame();
   else hasLaunched = true;
-  cardClick();
   generateCards(difficultySettings.x, difficultySettings.y);
   printCards();
   listenCards();
