@@ -61,19 +61,18 @@ class CardList {
         <img class="front-face" src="${this.list[i].src}">
         <img class="back-face" src="assets/back/back.jpg">
       </div>`;
-      this.list[i].getHtmlElement();
     }
   }
 
   listen() {
-    this.list.forEach((card) => {
+    /*this.list.forEach((card) => {
       console.log(card);
       card.htmlElement.addEventListener('click', (event) => {
         event.preventDefault();
         console.log('detect');
         card.select();
       })
-    });
+    });*/
   }
 }
 
@@ -82,13 +81,15 @@ class Card {
     this.id = `card-${id}`,
     this.pair = pair,
     this.src = `assets/cards/${theme}/${pair + 1}.png`,
-    this.htmlElement = undefined,
+//    this.htmlElement = undefined,
     this.isFound = false,
     this.isFlip = false
   };
 
-  getHtmlElement(){
-    this.htmlElement = document.getElementById(this.id);
+  listen(){
+    console.log(document.getElementById(this.id));/*.addEventListener('click', () => {
+      console.log('test');
+    });*/
   }
 
   flip(){
@@ -279,7 +280,7 @@ const listenCards = () => {
   });
 }*/
 
-const listenCards = () => {
+/*const listenCards = () => {
   cardList.list.forEach((card) => {
     card.htmlElement.addEventListener('click', (event) => {
       event.preventDefault();
@@ -287,7 +288,7 @@ const listenCards = () => {
       card.select();
     })
   });
-}
+}*/
 
 const launchGame = () => {
   if (hasLaunched) resetGame();
@@ -299,7 +300,7 @@ const launchGame = () => {
   //cardList.listen();
   //generateCards(difficultySettings.x, difficultySettings.y);
   //printCards();
-  listenCards();
+  //listenCards();
 };
 
 replayBtn.addEventListener("click", launchGame);
