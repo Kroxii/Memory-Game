@@ -115,6 +115,7 @@ const selectCard = (cardEl) => {
         cardsNodeList.forEach(el => el.style.pointerEvents = "");
       }, 1000); // 1 seconde avant de retourner les cartes
     }
+    endRound(selectedCard.pair === card.pair, [selectedCard, card]);
   }
 
   moves++;
