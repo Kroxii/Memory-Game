@@ -1,7 +1,31 @@
+:root {
+  /* Primary Colors */
+  --color-primary: #4a90e2;
+  --color-primary-dark: #357ab8;
+  --color-primary-bg: #f5f6fa;
+  --color-header: #fff;
+  --color-h1: #222;
+  --color-white: #fff;
+
+  /* Shadows */
+  --shadow-header: 0 2px 8px rgba(74, 144, 226, 0.1);
+  --shadow-container: 0 4px 24px rgba(74, 144, 226, 0.08);
+  --shadow-card: 0 2px 8px rgba(74, 144, 226, 0.12);
+  --shadow-face: 0 1px 4px rgba(74, 144, 226, 0.10);
+  --shadow-score: 0 1px 4px rgba(74, 144, 226, 0.08);
+
+  /* Border Radius */
+  --radius-border: 16px;
+  --radius-card: 12px;
+  --radius-score: 8px;
+}
+
+/* ========== Utilities ========== */
 .hidden {
   display: none;
 }
 
+/* ========== Responsive ========== */
 @media screen and (max-width: 600px) {
   #cards-container {
     grid-template-columns: repeat(2, 1fr);
@@ -16,15 +40,16 @@
   }
 }
 
+/* ========== Fonts ========== */
 @font-face {
   font-family: "arial";
   src: url();
 }
 
-/* Global Styles */
+/* ========== Global Styles ========== */
 body {
   font-family: "Arial", sans-serif;
-  background-color: var(--primary-bg);
+  background-color: var(--color-primary-bg);
   margin: 0;
   padding: 0;
   min-height: 100vh;
@@ -33,25 +58,26 @@ body {
   align-items: center;
 }
 
+/* ========== Header ========== */
 header {
-  background: var(--primary);
-  color: var(--header-color);
+  background: var(--color-primary);
+  color: var(--color-header);
   width: 100%;
   padding: 20px 0;
   text-align: center;
   margin-bottom: 10px;
-  box-shadow: var(--header-shadow);
-  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-header);
+  border-radius: var(--radius-border);
 }
 
 h1 {
   font-size: 2em;
   margin: 0;
   letter-spacing: 2px;
-  color: var(--h1-color);
+  color: var(--color-h1);
 }
 
-/* Game Settings */
+/* ========== Game Settings ========== */
 #game-settings {
   display: flex;
   justify-content: center;
@@ -60,7 +86,7 @@ h1 {
   width: 100%;
 }
 
-/* Cards Container */
+/* ========== Cards Container ========== */
 #cards-container {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -69,9 +95,9 @@ h1 {
   width: 100%;
   max-width: 600px;
   margin: 30px auto;
-  background: var(--white);
-  border-radius: var(--border-radius);
-  box-shadow: var(--container-shadow);
+  background: var(--color-white);
+  border-radius: var(--radius-border);
+  box-shadow: var(--shadow-container);
   padding: 20px;
 }
 
@@ -84,7 +110,7 @@ h1 {
   perspective: 1000px;
 }
 
-/* Card styles */
+/* ========== Card Styles ========== */
 .card {
   width: 100%;
   aspect-ratio: 1/1;
@@ -92,8 +118,8 @@ h1 {
   cursor: pointer;
   transform-style: preserve-3d;
   transition: transform 0.5s;
-  box-shadow: var(--card-shadow);
-  border-radius: var(--card-radius);
+  box-shadow: var(--shadow-card);
+  border-radius: var(--radius-card);
   background: transparent;
 }
 
@@ -113,11 +139,11 @@ h1 {
   width: 100%;
   height: 100%;
   position: absolute;
-  border-radius: var(--card-radius);
+  border-radius: var(--radius-card);
   backface-visibility: hidden;
   object-fit: contain;
-  background: var(--white);
-  box-shadow: var(--face-shadow);
+  background: var(--color-white);
+  box-shadow: var(--shadow-face);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -129,31 +155,31 @@ h1 {
 }
 
 .back-face {
-  background: var(--primary);
-  color: var(--white);
+  background: var(--color-primary);
+  color: var(--color-white);
   font-size: 2em;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* Score and moves */
+/* ========== Score and Moves ========== */
 #current-score, #move-counter, #chrono {
-  background: var(--white);
-  border-radius: var(--score-radius);
+  background: var(--color-white);
+  border-radius: var(--radius-score);
   padding: 8px 16px;
   margin: 8px;
-  box-shadow: var(--score-shadow);
+  box-shadow: var(--shadow-score);
   font-size: 1.1em;
   display: inline-block;
 }
 
-/* Replay button */
+/* ========== Replay Button ========== */
 #replay-btn {
-  background: var(--primary);
-  color: var(--white);
+  background: var(--color-primary);
+  color: var(--color-white);
   border: none;
-  border-radius: var(--score-radius);
+  border-radius: var(--radius-score);
   padding: 10px 24px;
   font-size: 1em;
   cursor: pointer;
@@ -161,5 +187,5 @@ h1 {
   transition: background 0.2s;
 }
 #replay-btn:hover {
-  background: var(--primary-dark);
+  background: var(--color-primary-dark);
 }
