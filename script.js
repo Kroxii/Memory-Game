@@ -87,7 +87,12 @@ const updateGameInfos = () => {
   movesSpan.textContent = moves;
 };
 
+  // Lance le chrono au tout premier clic
 const selectCard = (cardEl) => {
+  if (!timerStart) {
+    cardClick();
+  }
+
   const card = cards.find((card) => !card.isFound && card.id === cardEl.id);
 
   if (!card) return;
@@ -96,6 +101,20 @@ const selectCard = (cardEl) => {
     cardEl.classList.add("flip");
   } else if (selectedCard.id !== card.id) {
     cardEl.classList.add("flip");
+    const previousCardEl = document.getElementById(selectedCard.id);
+    const isPair = selectedCard.pair === card.pair;
+    endRound(isPair, [selectedCard, card]);
+
+    if (!isPair) {
+      // Désactive temporairement les clics
+      cardsNodeList.forEach(el => el.style.pointerEvents = "none");
+      setTimeout(() => {
+        cardEl.classList.remove("flip");
+        previousCardEl.classList.remove("flip");
+        // Réactive les clics
+        cardsNodeList.forEach(el => el.style.pointerEvents = "");
+      }, 1000); // 1 seconde avant de retourner les cartes
+    }
     endRound(selectedCard.pair === card.pair, [selectedCard, card]);
   }
 
@@ -176,7 +195,6 @@ const listenCards = () => {
 const launchGame = () => {
   if (hasLaunched) resetGame();
   else hasLaunched = true;
-  cardClick();
   generateCards(difficultySettings.x, difficultySettings.y);
   printCards();
   listenCards();
