@@ -46,16 +46,12 @@ class CardList {
   } //this removes -card- from the cardList
 
   pauseListeningForAll() {
-    this.list.forEach((card) => {
-      if (!card.isFound) card.pauseListening();
-    });
+    this.list.forEach((card) => card.pauseListening());
   } //this pauses the eventListener for
   //each card
 
   resumeListeningForAll() {
-    this.list.forEach((card) => {
-      if (!card.isFound) card.resumeListening();
-    });
+    this.list.forEach((card) => card.resumeListening());
   } //this resumes the eventListener for
   //each card
 
