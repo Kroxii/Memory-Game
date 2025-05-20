@@ -20,7 +20,6 @@ let numberOfFounds = 0;
 let selectedCard = undefined;
 let scoreMultiplier = 10;
 
-//let cards = [];
 let score = 0;
 let moves = 0;
 
@@ -65,15 +64,10 @@ class CardList {
   }
 
   listen() {
-    /*this.list.forEach((card) => {
-      console.log(card);
-      card.htmlElement.addEventListener('click', (event) => {
-        event.preventDefault();
-        console.log('detect');
-        card.select();
+    this.list.forEach((card) => {
+      card.listen();
       })
-    });*/
-  }
+    };
 }
 
 class Card {
@@ -81,34 +75,37 @@ class Card {
     this.id = `card-${id}`,
     this.pair = pair,
     this.src = `assets/cards/${theme}/${pair + 1}.png`,
-//    this.htmlElement = undefined,
     this.isFound = false,
     this.isFlip = false
   };
 
   listen(){
-    console.log(document.getElementById(this.id));/*.addEventListener('click', () => {
-      console.log('test');
-    });*/
+    document.getElementById(this.id).addEventListener('click', () => {
+      this.select();
+    });
   }
 
   flip(){
+    const div = document.getElementById(this.id);
+  
     switch (this.isFlip) {
       case true:
         this.isFlip = false;
-        this.htmlElement.classList.remove('flip');
+        div.classList.remove('flip');
+        div.removeEventListener('click');
         break;
       default:
         this.isFlip = true;
-        this.htmlElement.classList.add('flip');
+        div.classList.add('flip');
+        div.addEventListener('click', () => {
+          this.select();
+        });
     }
   }
 
   endRound(hasWon, other) {
     switch (hasWon) {
       case true:
-        this.htmlElement.removeEventListener('click');
-        other.htmlElement.removeEventListener('click');
         win();
         break;
       default:
@@ -118,13 +115,10 @@ class Card {
     }
   }
 
-  select(){
-    console.log('click');
-    if (!this.isFound) {
-      if (!selectedCard) selectedCard = this;
-      else if (selectedCard !== this)
-        this.endRound(selectedCard.pair === this.pair, selectedCard);
-    }
+  select() {
+    this.flip();
+    if (!selectedCard) selectedCard = this;
+    else this.endRound(selectedCard.pair === this.pair, selectedCard);
   }
 };
 
@@ -268,27 +262,6 @@ const printCards = () => {
     </div>`;
   }
 };
-/*
-const listenCards = () => {
-  cardsNodeList = document.querySelectorAll(".card");
-
-  cardsNodeList.forEach((cardEl) => {
-    cardEl.addEventListener("click", (event) => {
-      event.preventDefault();
-      selectCard(cardEl);
-    })
-  });
-}*/
-
-/*const listenCards = () => {
-  cardList.list.forEach((card) => {
-    card.htmlElement.addEventListener('click', (event) => {
-      event.preventDefault();
-      console.log('detect');
-      card.select();
-    })
-  });
-}*/
 
 const launchGame = () => {
   if (hasLaunched) resetGame();
@@ -297,10 +270,7 @@ const launchGame = () => {
   cardList.generateList();
   cardList.shuffle();
   cardList.display();
-  //cardList.listen();
-  //generateCards(difficultySettings.x, difficultySettings.y);
-  //printCards();
-  //listenCards();
+  cardList.listen();
 };
 
 replayBtn.addEventListener("click", launchGame);
