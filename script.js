@@ -14,39 +14,52 @@ const theme = "pokemon";
 let hasLaunched = false;
 
 let difficultySettings = { x: 4, y: 4 };
-let numberOfPairs = (difficultySettings.x * difficultySettings.y) / 2;
 
-let numberOfFounds = 0;
 let selectedCard = undefined;
 let scoreMultiplier = 10;
 
 let score = 0;
 let moves = 0;
 
+/*-----------------CardList class definition-----------------*/
+
 class CardList {
+  //'constructor will define the behaviour of
+  // calling 'new CardList(size)'
   constructor(size) {
-    this.list = [];
+    this.list = []; //this helps reset the game
     this.generateList(size);
     this.shuffle();
     this.display();
     this.listenCards();
-  }
+  } // the constructor generate a new list
+  // of -size- cards, shuffle them, inject
+  // them on the HTML page and then sets the
+  // eventListeners for each HTML element
+
+  /*-----------------CardList Utils-----------------*/
+  //Those are utilities functions, mostly here to improve
+  //code lisibility
 
   remove(card) {
     this.list.splice(this.list.indexOf(card), 1);
-  }
-
-  resumeListeningForAll() {
-    this.list.forEach((card) => {
-      if (!card.isFound) card.resumeListening();
-    });
-  }
+  } //this removes -card- from the cardList
 
   pauseListeningForAll() {
     this.list.forEach((card) => {
       if (!card.isFound) card.pauseListening();
     });
-  }
+  } //this pauses the eventListener for
+  //each card
+
+  resumeListeningForAll() {
+    this.list.forEach((card) => {
+      if (!card.isFound) card.resumeListening();
+    });
+  } //this resumes the eventListener for
+  //each card
+
+  /*-----------------Card Generator-----------------*/
 
   generateList(size) {
     let paireValue = 0;
@@ -59,9 +72,9 @@ class CardList {
       } else if (i !== 0) {
         incr = true;
       }
-      this.list.push(new Card(i, paireValue));
+      this.list.push(new Card(i, paireValue)); //call the Card constructor, defined later in code
     }
-  }
+  } //Generate an ordered list of Card objects
 
   shuffle() {
     for (let i = this.list.length - 1; i > 0; i--) {
@@ -70,7 +83,9 @@ class CardList {
       this.list[i] = this.list[j];
       this.list[j] = temp;
     }
-  }
+  } //shuffle the Card objects by swapping one
+  // random Card with the last, then an other
+  // with last - 1, etc...
 
   display() {
     for (let i = 0; i < this.list.length; i++) {
@@ -80,50 +95,73 @@ class CardList {
         <img class="back-face" src="assets/back/back.jpg">
       </div>`;
     }
-  }
+  } //Inject the cards inside the HTML, setting a correct id
+  // + the correct path for the image by using the pair value
 
   listenCards() {
     this.list.forEach((card) => card.listen());
-  }
+  } //Sets up the eventListener for the game to work, iterating
+  //througt the list and calling the listen method (defined later)
+  //on each card
 }
 
+/*-----------------Card class definition-----------------*/
+//the Card object contains the game logic + some usefull values
+//for each card + some usefull methods
 class Card {
   constructor(id, pair) {
-    (this.id = `card-${id}`),
-      (this.pair = pair),
-      (this.src = `assets/cards/${theme}/${pair + 1}.png`),
-      (this.isFound = false),
-      (this.isFlip = false),
-      (this.div = undefined);
+    (this.id = `card-${id}`), // an id that we'll use to identify the corresponding HTML element when it's created
+      (this.pair = pair), // a value that is shared by two Cards, iditenfying them as pairs
+      (this.src = `assets/cards/${theme}/${pair + 1}.png`), //the path of the card image, using the pair value so that pairs get the same image
+      (this.isFlip = false), //a boolean that checks the state of the card
+      (this.div = undefined); //the corresponding HTML element, set to undefined here because the HTML has not been injected yet when the constructor is called
   }
+
+  /*-----------------Card Utils-----------------*/
+
+  listen() {
+    this.div = document.getElementById(this.id);
+    this.div.addEventListener("click", this.select.bind(this));//bind(this) is mandatory here, without it /this/ points to the div and not the Card in the function's context (could also use a () => {} but it already works so...)
+  }//Saves the HTML element in this.div + sets up the event listener on that div
+
+  pauseListening() {
+    this.div.style.pointerEvents = "none";
+  }//Suspend the event listener for this particular Card
+
+  resumeListening() {
+    this.div.style.pointerEvents = "";
+  }//resumes the event listener for this particular Card
 
   flip() {
     switch (this.isFlip) {
       case true:
         this.isFlip = false;
-        this.div.style.pointerEvents = "";
+        this.resumeListening();
         this.div.classList.remove("flip");
         break;
       default:
         this.isFlip = true;
-        this.div.style.pointerEvents = "none";
+        this.pauseListening();
         this.div.classList.add("flip");
     }
-  }
+  }//Depending on the state of the Card, pauses the
+  // event listener and flip to show, or resumes the
+  // event listener and flip to hide
+
+  /*-----------------Gameplay-----------------*/
 
   win() {
     score += 5 * scoreMultiplier;
-    numberOfFounds++;
-    cardList.remove(this);
-    cardList.remove(selectedCard);
+    cardList.remove(this);         //We remove both Cards from the list so that they don't became clickable
+    cardList.remove(selectedCard);//again when we call resumeListenerForAll method after a lose() call, + we can actually use that behaviour to know when the game is over
     selectedCard = undefined;
-    if (cardList.list.length === 0) {
-      console.log('a winner is you');
+    if (cardList.list.length === 0) { //Since we remove the Cards from cardList.list at each win, we know the game is over when the list is empty
+      console.log("a winner is you");
     }
   }
 
   lose() {
-    if (scoreMultiplier > 1) scoreMultiplier = scoreMultiplier--;
+    if (scoreMultiplier > 1) scoreMultiplier--;
     cardList.pauseListeningForAll();
     setTimeout(() => {
       selectedCard.flip();
@@ -134,28 +172,17 @@ class Card {
   }
 
   select() {
-    if(!timerStart) cardClick();
+    if (!timerStart) cardClick();
     this.flip();
     if (!selectedCard) selectedCard = this;
     else if (selectedCard.pair === this.pair) this.win();
     else this.lose();
-  }
-
-  pauseListening() {
-    this.div.style.pointerEvents = "none";
-  }
-
-  resumeListening() {
-    this.div.style.pointerEvents = "";
-  }
-
-  listen() {
-    this.div = document.getElementById(this.id);
-    this.div.addEventListener("click", this.select.bind(this));
+    moves++;
+    updateGameInfos();
   }
 }
 
-let cardList = new CardList(difficultySettings.x * difficultySettings.y);
+let cardList = new CardList(difficultySettings.x * difficultySettings.y); //Creating the object launches the game
 
 /*---------------Chrono---------------*/
 
@@ -191,7 +218,7 @@ const resetTimer = () => {
   timerInterval = null;
 };
 
-/*---------------Gameplay---------------*/
+/*---------------Interface---------------*/
 
 const updateGameInfos = () => {
   const scoreSpan = document.getElementById("current-score-span");
@@ -199,42 +226,6 @@ const updateGameInfos = () => {
 
   scoreSpan.textContent = score;
   movesSpan.textContent = moves;
-};
-
-// Lance le chrono au tout premier clic
-const selectCard = (cardEl) => {
-  if (!timerStart) {
-    cardClick();
-  }
-
-  const card = cards.find((card) => !card.isFound && card.id === cardEl.id);
-
-  if (!card) return;
-  else if (!selectedCard) {
-    selectedCard = card;
-    cardEl.classList.add("flip");
-  } else if (selectedCard.id !== card.id) {
-    cardEl.classList.add("flip");
-    const previousCardEl = document.getElementById(selectedCard.id);
-    const isPair = selectedCard.pair === card.pair;
-    endRound(isPair, [selectedCard, card]);
-
-    if (!isPair) {
-      // Désactive temporairement les clics
-      cardsNodeList.forEach((el) => (el.style.pointerEvents = "none"));
-      setTimeout(() => {
-        cardEl.classList.remove("flip");
-        previousCardEl.classList.remove("flip");
-        // Réactive les clics
-        cardsNodeList.forEach((el) => (el.style.pointerEvents = ""));
-      }, 1000); // 1 seconde avant de retourner les cartes
-    }
-    endRound(selectedCard.pair === card.pair, [selectedCard, card]);
-  }
-
-  moves++;
-  if (numberOfFounds === numberOfPairs) endGame();
-  updateGameInfos();
 };
 
 /*---------------Replay-Button---------------*/
@@ -246,7 +237,6 @@ const resetGame = () => {
   scoreMultiplier = 10;
   cardsContainer.innerHTML = "";
   selectedCard = undefined;
-  numberOfPairs = (difficultySettings.x * difficultySettings.y) / 2;
   resetTimer();
   updateGameInfos();
   cardList = new CardList(difficultySettings.x * difficultySettings.y);
