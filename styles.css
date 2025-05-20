@@ -1,47 +1,92 @@
+:root {
+  /* Primary Colors */
+  --color-primary: #4a90e2;
+  --color-primary-dark: #357ab8;
+  --color-primary-bg: #f5f6fa;
+  --color-header: #fff;
+  --color-h1: #222;
+  --color-white: #fff;
+
+  /* Shadows */
+  --shadow-header: 0 2px 8px rgba(74, 144, 226, 0.1);
+  --shadow-container: 0 4px 24px rgba(74, 144, 226, 0.08);
+  --shadow-card: 0 2px 8px rgba(74, 144, 226, 0.12);
+  --shadow-face: 0 1px 4px rgba(74, 144, 226, 0.10);
+  --shadow-score: 0 1px 4px rgba(74, 144, 226, 0.08);
+
+  /* Border Radius */
+  --radius-border: 16px;
+  --radius-card: 12px;
+  --radius-score: 8px;
+}
+
+/* ========== Utilities ========== */
 .hidden {
   display: none;
 }
 
+/* ========== Responsive ========== */
 @media screen and (max-width: 600px) {
+  #cards-container {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(8, 1fr);
+    max-width: 95vw;
+    padding: 10px;
+  }
+  .card {
+    width: 100%;
+    height: 80px;
+    margin: 0;
+  }
 }
 
+/* ========== Fonts ========== */
 @font-face {
   font-family: "arial";
   src: url();
 }
 
-/* Global Styles */
+/* ========== Global Styles ========== */
 body {
-  font-family: "arial", sans-serif;
-  background-color: #f0f0f0;
+  font-family: "Arial", sans-serif;
+  background-color: var(--color-primary-bg);
   margin: 0;
   padding: 0;
+  min-height: 100vh;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
 }
 
-
+/* ========== Header ========== */
 header {
-  background-color: none;
-  padding: 10px;
+  background: var(--color-primary);
+  color: var(--color-header);
+  width: 100%;
+  padding: 20px 0;
   text-align: center;
+  margin-bottom: 10px;
+  box-shadow: var(--shadow-header);
+  border-radius: var(--radius-border);
 }
 
 h1 {
   font-size: 2em;
-  margin: 10px 0;
-  color: #333;
+  margin: 0;
+  letter-spacing: 2px;
+  color: var(--color-h1);
 }
 
-/* Game Settings */
+/* ========== Game Settings ========== */
 #game-settings {
   display: flex;
   justify-content: center;
+  gap: 20px;
+  margin: 10px 0;
   width: 100%;
 }
 
-/* Cards Container */
+/* ========== Cards Container ========== */
 #cards-container {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -49,7 +94,11 @@ h1 {
   gap: 10px;
   width: 100%;
   max-width: 600px;
-  margin: 0 auto;
+  margin: 30px auto;
+  background: var(--color-white);
+  border-radius: var(--radius-border);
+  box-shadow: var(--shadow-container);
+  padding: 20px;
 }
 
 #game-container {
@@ -61,17 +110,18 @@ h1 {
   perspective: 1000px;
 }
 
+/* ========== Card Styles ========== */
 .card {
-  width: calc(25% - 10px);
-  height: calc(33.333% - 10px);
-  margin: 5px;
+  width: 100%;
+  aspect-ratio: 1/1;
   position: relative;
-  transform: scale(1);
+  cursor: pointer;
   transform-style: preserve-3d;
-  transition: transform .5s;
-  box-shadow: 1px 1px 1px rgba(0,0,0,.3);
+  transition: transform 0.5s;
+  box-shadow: var(--shadow-card);
+  border-radius: var(--radius-card);
+  background: transparent;
 }
-
 
 /* Card Flip Effect */
 .card:active {
@@ -83,17 +133,59 @@ h1 {
   transform: rotateY(180deg);
 }
 
+/* Card faces */
 .front-face,
 .back-face {
   width: 100%;
   height: 100%;
-  padding: 20px;
   position: absolute;
-  border-radius: 5px;
-  background: #1C7CCC;
+  border-radius: var(--radius-card);
   backface-visibility: hidden;
+  object-fit: contain;
+  background: var(--color-white);
+  box-shadow: var(--shadow-face);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
 }
 
 .front-face {
   transform: rotateY(180deg);
+}
+
+.back-face {
+  background: var(--color-primary);
+  color: var(--color-white);
+  font-size: 2em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ========== Score and Moves ========== */
+#current-score, #move-counter, #chrono {
+  background: var(--color-white);
+  border-radius: var(--radius-score);
+  padding: 8px 16px;
+  margin: 8px;
+  box-shadow: var(--shadow-score);
+  font-size: 1.1em;
+  display: inline-block;
+}
+
+/* ========== Replay Button ========== */
+#replay-btn {
+  background: var(--color-primary);
+  color: var(--color-white);
+  border: none;
+  border-radius: var(--radius-score);
+  padding: 10px 24px;
+  font-size: 1em;
+  cursor: pointer;
+  margin: 16px 0;
+  transition: background 0.2s;
+}
+#replay-btn:hover {
+  background: var(--color-primary-dark);
 }
