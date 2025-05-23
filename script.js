@@ -1,5 +1,6 @@
 const numberSpan = document.querySelectorAll(".number-span");
 const highestScore = document.getElementById("highest-score");
+const highScoreSpan = document.getElementById("highscore-score-span");
 const settingsBtn = document.getElementById("settings-btn");
 const settingsScroll = document.getElementById("settings-scroll");
 const themeSettings = document.getElementById("theme-settings");
