@@ -41,8 +41,8 @@ class Interface {
     if (newScore > this.highestScore) {
       localStorage.setItem("highscore", newScore);
       this.highestScore = newScore;
+      this.highestScoreSpan.innerText = newScore;
     }
-    this.highestScoreSpan.innerText = newScore;
   };
   // Save the new highscore in localStorage
   // if it's higher than the previous one
@@ -251,7 +251,7 @@ class Game {
 
   win() {
     this.timer.stop();
-    this.interface.saveHighScore();
+    this.interface.saveHighScore(this.score);
     victoryScreen.innerHTML += `<strong id="you-won">You won the game in ${this.interface.moves} moves!</strong>
     <ul id="victory-infos">
       <li id="victory-score">Your score: ${this.score}</li>
