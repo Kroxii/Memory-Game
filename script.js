@@ -146,14 +146,17 @@ class Card {
 
   /*-----------------Gameplay-----------------*/
 
+  winGame() {
+    timer.stop();
+  }
+
   win() {
     score += 5 * scoreMultiplier;
     cardList.remove(this);         //We remove both Cards from the list so that they don't became clickable
     cardList.remove(selectedCard);//again when we call resumeListenerForAll method after a lose() call, + we can actually use that behaviour to know when the game is over
     selectedCard = undefined;
-    if (cardList.list.length === 0) { //Since we remove the Cards from cardList.list at each win, we know the game is over when the list is empty
-      console.log("a winner is you");
-    }
+    if (cardList.list.length === 0) //Since we remove the Cards from cardList.list at each win, we know the game is over when the list is empty
+      this.winGame();
   }
 
   lose() {
