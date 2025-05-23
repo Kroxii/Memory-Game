@@ -152,6 +152,12 @@ class Card {
     cardList.remove(this); //We remove both Cards from the list so that they don't became clickable
     cardList.remove(selectedCard); //again when we call resumeListenerForAll method after a lose() call, + we can actually use that behaviour to know when the game is over
     selectedCard = undefined;
+
+    if (score > loadHighScore()) {
+      saveHighScore(score);
+      updateHighScore(score);
+    }
+
     if (cardList.list.length === 0) {
       //Since we remove the Cards from cardList.list at each win, we know the game is over when the list is empty
       console.log("a winner is you");
@@ -241,3 +247,27 @@ const resetGame = () => {
 };
 
 replayBtn.addEventListener("click", resetGame);
+
+/*---------------Highest-Score---------------*/
+
+const loadHighScore = () => {
+  const stored = localStorage.getItem("highscore");
+  if (stored) {
+    return parseInt(stored);
+  } else {
+    return 0;
+  }
+};
+// Load the highscore from localStorage
+const saveHighScore = (newScore) => {
+  const currentHighScore = loadHighScore();
+  if (newScore > currentHighScore) {
+    localStorage.setItem("highscore", newScore);
+  }
+};
+// Save the new highscore in localStorage
+// if it's higher than the previous one
+const updateHighScore = (score) => {
+  highScoreSpan.textContent = score;
+};
+// Update the highscore with the new score
