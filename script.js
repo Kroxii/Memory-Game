@@ -168,7 +168,7 @@ class Card {
   }
 
   select() {
-    if (!timer.isStart) timer.cardClick();
+    if (!timer.hasStarted) timer.start();
     this.flip();
     if (!selectedCard) selectedCard = this;
     else if (selectedCard.pair === this.pair) this.win();
@@ -188,30 +188,30 @@ const seconds = document.getElementById("seconds");
 class Timer {
   constructor() {
     this.totalSeconds = 0;
-    this.isStart = false;
+    this.hasStarted = false;
     this.interval = null;
   }
 
-  start(timer) {
-    return timer.toString().padStart(2, "0");
+  getTimerString(time) {
+    return time.toString().padStart(2, "0");
   };
 
-  setTimer = () => {
+  setTimer() {
     this.totalSeconds++;
-    seconds.textContent = this.start(this.totalSeconds % 60);
-    minutes.textContent = this.start(Math.floor(this.totalSeconds / 60));
+    seconds.textContent = this.getTimerString(this.totalSeconds % 60);
+    minutes.textContent = this.getTimerString(Math.floor(this.totalSeconds / 60));
   };
 
-  cardClick = () => {
-    if (!this.isStart) {
-      this.isStart = true;
+  start() {
+    if (!this.hasStarted) {
+      this.hasStarted = true;
       this.interval = setInterval(this.setTimer, 1000);
     }
   };
 
-  reset = () => {
+  reset() {
     clearInterval(this.interval);
-    this.isStart = false;
+    this.hasStarted = false;
     this.totalSeconds = 0;
     seconds.textContent = "00";
     minutes.textContent = "00";
