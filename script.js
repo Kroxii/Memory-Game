@@ -196,7 +196,7 @@ class Timer {
     return time.toString().padStart(2, "0");
   };
 
-  setTimer() {
+  addSecond() {
     this.totalSeconds++;
     seconds.textContent = this.getTimerString(this.totalSeconds % 60);
     minutes.textContent = this.getTimerString(Math.floor(this.totalSeconds / 60));
@@ -205,7 +205,7 @@ class Timer {
   start() {
     if (!this.hasStarted) {
       this.hasStarted = true;
-      this.interval = setInterval(this.setTimer, 1000);
+      this.interval = setInterval(this.addSecond, 1000);
     }
   };
 
