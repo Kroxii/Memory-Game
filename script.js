@@ -149,6 +149,11 @@ class Card {
 
   winGame() {
     timer.stop();
+    victoryScreen.innerHTML += `<strong id="you-won">You won the game in ${moves} moves!</strong>
+    <ul id="victory-infos">
+      <li id="victory-score">Your score: ${score}</li>
+      <li id="victory-time">Your time: ${minutes.textContent}:${seconds.textContent}</li>
+    </ul>`;
   }
 
   win() {
@@ -249,6 +254,7 @@ const resetGame = () => {
   cardsContainer.innerHTML = "";
   selectedCard = undefined;
   timer.reset();
+  victoryScreen.innerHTML = "";
   updateGameInfos();
   cardList = new CardList(difficultySettings.x * difficultySettings.y);
 };
