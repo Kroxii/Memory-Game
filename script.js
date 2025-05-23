@@ -1,6 +1,6 @@
 const numberSpan = document.querySelectorAll(".number-span");
 const highestScore = document.getElementById("highest-score");
-const highScoreSpan = document.getElementById("highscore-score-span");
+const highestScoreSpan = document.getElementById("highest-score-span");
 const settingsBtn = document.getElementById("settings-btn");
 const settingsScroll = document.getElementById("settings-scroll");
 const themeSettings = document.getElementById("theme-settings");
@@ -286,6 +286,6 @@ const saveHighScore = (newScore) => {
 // Save the new highscore in localStorage
 // if it's higher than the previous one
 const updateHighScore = (score) => {
-  highScoreSpan.textContent = score;
+  highestScoreSpan.textContent = score;
 };
 // Update the highscore with the new score
