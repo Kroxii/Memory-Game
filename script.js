@@ -205,7 +205,7 @@ class Timer {
   start() {
     if (!this.hasStarted) {
       this.hasStarted = true;
-      this.interval = setInterval(this.addSecond, 1000);
+      this.interval = setInterval(this.addSecond.bind(this), 1000);
     }
   };
 
