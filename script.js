@@ -7,6 +7,7 @@ const gameSettings = document.getElementById("game-settings");
 const currentScore = document.getElementById("current-score");
 const chrono = document.getElementById("chrono");
 const moveCounter = document.getElementById("move-counter");
+const victoryScreen = document.getElementById("victory-screen");
 const cardsContainer = document.getElementById("cards-container");
 const replayBtn = document.getElementById("replay-btn");
 const theme = "pokemon";
