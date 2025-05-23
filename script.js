@@ -209,13 +209,17 @@ class Timer {
     }
   };
 
-  reset() {
+  stop() {
     clearInterval(this.interval);
+    this.interval = null;
+  };
+
+  reset() {
+    this.stop();
     this.hasStarted = false;
     this.totalSeconds = 0;
     seconds.textContent = "00";
     minutes.textContent = "00";
-    this.interval = null;
   };
 };
 
