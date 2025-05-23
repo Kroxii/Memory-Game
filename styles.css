@@ -1,11 +1,10 @@
 :root {
-  /* Primary Colors */
-  --color-primary: #4a90e2;
-  --color-primary-dark: #357ab8;
+  /* Light mode colors */
   --color-primary-bg: #f5f6fa;
-  --color-header: #fff;
   --color-h1: #222;
   --color-white: #fff;
+  --color-header: #aaaaaa;
+  --color-header-dark: #888;
 
   /* Shadows */
   --shadow-header: 0 2px 8px rgba(74, 144, 226, 0.1);
@@ -15,9 +14,9 @@
   --shadow-score: 0 1px 4px rgba(74, 144, 226, 0.08);
 
   /* Border Radius */
-  --radius-border: 16px;
-  --radius-card: 12px;
-  --radius-score: 8px;
+  --radius-border: ;
+  --radius-card: ;
+  --radius-score: ;
 }
 
 /* ========== Utilities ========== */
@@ -32,11 +31,18 @@
     grid-template-rows: repeat(8, 1fr);
     max-width: 95vw;
     padding: 10px;
+    gap: 10px;
   }
   .card {
-    width: 100%;
-    height: 80px;
-    margin: 0;
+    min-width: 70px;
+    min-height: 70px;
+    max-width: 100px;
+    max-height: 100px;
+    padding: 0;
+  }
+  .front-face, .back-face {
+    padding: 6px;
+    font-size: 1.2em;
   }
 }
 
@@ -47,6 +53,40 @@
 }
 
 /* ========== Global Styles ========== */
+
+header {
+  background: var(--color-header);
+  color: var(--color-h1);
+  width: 100%;
+  padding: 20px 0;
+  text-align: center;
+  margin-bottom: 10px;
+  box-shadow: var(--shadow-header);
+  border-radius: var(--radius-border);
+  position: relative;
+  display: flex;       
+  align-items: center; 
+  justify-content: center; 
+}
+
+#settings-btn {
+  position: absolute;  
+  top: 20px;
+  right: 30px;
+  margin-left: auto;
+  padding: 10px 20px;
+  border-radius: 20px;
+}
+
+#theme-toggle-btn {
+  position: absolute;  
+  top: 20px;
+  left: 30px;
+  margin-right: auto;
+  padding: 10px 20px;
+  border-radius: 20px;
+}
+
 body {
   font-family: "Arial", sans-serif;
   background-color: var(--color-primary-bg);
@@ -58,16 +98,13 @@ body {
   align-items: center;
 }
 
-/* ========== Header ========== */
-header {
-  background: var(--color-primary);
-  color: var(--color-header);
-  width: 100%;
-  padding: 20px 0;
-  text-align: center;
-  margin-bottom: 10px;
-  box-shadow: var(--shadow-header);
-  border-radius: var(--radius-border);
+body.dark-mode {
+  --color-primary: #222e3c;
+  --color-primary-dark: #151c26;
+  --color-primary-bg: #181c23;
+  --color-h1: #f5f6fa;
+  --color-white: #23272f;
+  --color-header: #2c3440;
 }
 
 h1 {
@@ -77,7 +114,6 @@ h1 {
   color: var(--color-h1);
 }
 
-/* ========== Game Settings ========== */
 #game-settings {
   display: flex;
   justify-content: center;
@@ -86,19 +122,39 @@ h1 {
   width: 100%;
 }
 
+#highest-score {
+  width: 100%;
+  text-align: center;
+  margin: 16px 0 16px 0;
+  font-weight: bold;
+  font-size: 1.1em;
+  padding: 0;
+}
+
+footer {
+  background: var(--color-header);
+  color: var(--color-h1);
+  width: 100%;
+  padding: 5px 0;
+  text-align: center;
+  margin-top: auto;
+  box-shadow: var(--shadow-header);
+  border-radius: var(--radius-border);
+}
+
 /* ========== Cards Container ========== */
 #cards-container {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows: repeat(4, 1fr);
-  gap: 10px;
+  gap: 16px;
   width: 100%;
-  max-width: 600px;
-  margin: 30px auto;
+  max-width: 500px;
+  margin: 10px auto;
   background: var(--color-white);
-  border-radius: var(--radius-border);
+  border-radius: 18px;
   box-shadow: var(--shadow-container);
-  padding: 20px;
+  padding: 32px;
 }
 
 #game-container {
@@ -119,14 +175,14 @@ h1 {
   transform-style: preserve-3d;
   transition: transform 0.5s;
   box-shadow: var(--shadow-card);
-  border-radius: var(--radius-card);
+  border-radius: (var(--radius-card));
   background: transparent;
 }
 
 /* Card Flip Effect */
 .card:active {
   transform: scale(0.97);
-  transition: transform .2s;
+  transition: transform .4s;
 }
 
 .card.flip {
@@ -139,15 +195,13 @@ h1 {
   width: 100%;
   height: 100%;
   position: absolute;
-  border-radius: var(--radius-card);
+  border-radius: 16px;
   backface-visibility: hidden;
   object-fit: contain;
-  background: var(--color-white);
-  box-shadow: var(--shadow-face);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 8px;
+  padding: 5px;
 }
 
 .front-face {
@@ -155,20 +209,21 @@ h1 {
 }
 
 .back-face {
-  background: var(--color-primary);
+  background: none;
   color: var(--color-white);
   font-size: 2em;
   display: flex;
   align-items: center;
   justify-content: center;
+  /* Ensure same size as front-face */
 }
 
 /* ========== Score and Moves ========== */
-#current-score, #move-counter, #chrono {
+#current-score, #move-counter, #chrono, #highest-score {
   background: var(--color-white);
   border-radius: var(--radius-score);
   padding: 8px 16px;
-  margin: 8px;
+  margin: 4px;
   box-shadow: var(--shadow-score);
   font-size: 1.1em;
   display: inline-block;
@@ -176,16 +231,20 @@ h1 {
 
 /* ========== Replay Button ========== */
 #replay-btn {
-  background: var(--color-primary);
-  color: var(--color-white);
+  display: block;
+  margin: 70px auto 14px auto; /* espace au-dessus du footer */
+  background: var(--color-header);
+  color: var(--color-h1);
   border: none;
   border-radius: var(--radius-score);
+
   padding: 10px 24px;
   font-size: 1em;
   cursor: pointer;
-  margin: 16px 0;
   transition: background 0.2s;
+  align-self: center;
 }
 #replay-btn:hover {
-  background: var(--color-primary-dark);
+  background: var(--color-header-dark);
 }
+
