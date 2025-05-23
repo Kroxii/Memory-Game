@@ -1,27 +1,114 @@
-const numberSpan = document.querySelectorAll(".number-span");
-const highestScore = document.getElementById("highest-score");
-const highestScoreSpan = document.getElementById("highest-score-span");
 const settingsBtn = document.getElementById("settings-btn");
 const settingsScroll = document.getElementById("settings-scroll");
 const themeSettings = document.getElementById("theme-settings");
 const gameSettings = document.getElementById("game-settings");
-const currentScore = document.getElementById("current-score");
-const chrono = document.getElementById("chrono");
-const moveCounter = document.getElementById("move-counter");
 const victoryScreen = document.getElementById("victory-screen");
 const cardsContainer = document.getElementById("cards-container");
 const replayBtn = document.getElementById("replay-btn");
 const theme = "pokemon";
 
-let hasLaunched = false;
+const scoreSpan = document.getElementById("current-score-span");
+const movesSpan = document.getElementById("moves-span");
 
 let difficultySettings = { x: 4, y: 4 };
 
-let selectedCard = undefined;
-let scoreMultiplier = 10;
+/*---------------Interface---------------*/
 
-let score = 0;
-let moves = 0;
+class Interface {
+  constructor() {
+    this.scoreSpan = document.getElementById("current-score-span");
+    this.movesSpan = document.getElementById("moves-span");
+    this.highestScoreSpan = document.getElementById("highest-score-span");
+    this.highestScore = this.loadHighScore();
+    this.moves = 0;
+
+    this.launch();
+  }
+
+  /*---------------Highest-Score---------------*/
+
+  loadHighScore() {
+    const stored = localStorage.getItem("highscore");
+    if (stored) {
+      return parseInt(stored);
+    } else {
+      return 0;
+    }
+  };
+  // Load the highscore from localStorage
+
+  saveHighScore(newScore) {
+    if (newScore > this.highestScore) {
+      localStorage.setItem("highscore", newScore);
+      this.highestScore = newScore;
+    }
+    this.highestScoreSpan.innerText = newScore;
+  };
+  // Save the new highscore in localStorage
+  // if it's higher than the previous one
+
+  update() {
+    this.moves++;
+    this.scoreSpan.innerText = game.score;
+    this.movesSpan.innerText = this.moves;
+  }
+
+  launch() {
+    this.scoreSpan.innerText = 0;
+    this.movesSpan.innerText = 0;
+    this.highestScoreSpan.innerText = this.highestScore;
+  }
+
+  reset() {
+    this.moves = 0;
+    this.scoreSpan.innerText = 0;
+    this.movesSpan.innerText = 0;
+    this.highestScoreSpan.innerText = this.highestScore;
+  }
+}
+
+/*---------------Chrono---------------*/
+
+const minutes = document.getElementById("minutes");
+const seconds = document.getElementById("seconds");
+
+class Timer {
+  constructor() {
+    this.totalSeconds = 0;
+    this.hasStarted = false;
+    this.interval = null;
+  }
+
+  getTimerString(time) {
+    return time.toString().padStart(2, "0");
+  };
+
+  addSecond() {
+    this.totalSeconds++;
+    seconds.textContent = this.getTimerString(this.totalSeconds % 60);
+    minutes.textContent = this.getTimerString(Math.floor(this.totalSeconds / 60));
+  };
+
+  start() {
+    if (!this.hasStarted) {
+      this.hasStarted = true;
+      this.interval = setInterval(this.addSecond.bind(this), 1000);
+    }
+  };
+
+  stop() {
+    clearInterval(this.interval);
+    this.interval = null;
+  };
+
+  reset() {
+    this.stop();
+    this.hasStarted = false;
+    this.totalSeconds = 0;
+    seconds.textContent = "00";
+    minutes.textContent = "00";
+  };
+};
 
 /*-----------------CardList class definition-----------------*/
 
@@ -104,8 +191,8 @@ class CardList {
 }
 
 /*-----------------Card class definition-----------------*/
-//the Card object contains the game logic + some usefull values
-//for each card + some usefull methods
+//the Card object contains the cards infos +
+// some usefull methods
 class Card {
   constructor(id, pair) {
     (this.id = `card-${id}`), // an id that we'll use to identify the corresponding HTML element when it's created
@@ -119,7 +206,7 @@ class Card {
 
   listen() {
     this.div = document.getElementById(this.id);
-    this.div.addEventListener("click", this.select.bind(this)); //bind(this) is mandatory here, without it /this/ points to the div and not the Card in the function's context (could also use a () => {} but it already works so...)
+    this.div.addEventListener("click", () => game.select(this));
   } //Saves the HTML element in this.div + sets up the event listener on that div
 
   pauseListening() {
@@ -146,146 +233,89 @@ class Card {
   // event listener and flip to show, or resumes the
   // event listener and flip to hide
 
-  /*-----------------Gameplay-----------------*/
+}
 
-  winGame() {
-    if (score > loadHighScore()) {
-      saveHighScore(score);
-      updateHighScore(score);
-    }
-    timer.stop();
-    victoryScreen.innerHTML += `<strong id="you-won">You won the game in ${moves} moves!</strong>
+/*-----------------Gameplay-----------------*/
+
+class Game {
+  constructor(size) {
+    this.score = 0;
+    this.scoreMultiplier = 10;
+    this.firstSelectedCard = undefined;
+    this.secondSelectedCard = undefined;
+
+    this.interface = new Interface();
+    this.cardList = new CardList(size);
+    this.timer = new Timer();
+  }
+
+  win() {
+    this.timer.stop();
+    this.interface.saveHighScore();
+    victoryScreen.innerHTML += `<strong id="you-won">You won the game in ${this.interface.moves} moves!</strong>
     <ul id="victory-infos">
-      <li id="victory-score">Your score: ${score}</li>
+      <li id="victory-score">Your score: ${this.score}</li>
       <li id="victory-time">Your time: ${minutes.textContent}:${seconds.textContent}</li>
     </ul>`;
   }
 
-  win() {
-    score += 5 * scoreMultiplier;
-    cardList.remove(this); //We remove both Cards from the list so that they don't became clickable
-    cardList.remove(selectedCard); //again when we call resumeListenerForAll method after a lose() call, + we can actually use that behaviour to know when the game is over
-    selectedCard = undefined;
-    if (cardList.list.length === 0) //Since we remove the Cards from cardList.list at each win, we know the game is over when the list is empty
-      this.winGame();
+  isPair() {
+    this.score += 5 * this.scoreMultiplier;
+    this.cardList.remove(this.firstSelectedCard); //We remove both Cards from the list so that they don't became clickable
+    this.cardList.remove(this.secondSelectedCard); //again when we call resumeListenerForAll method after a isNotPair() call,
+    this.firstSelectedCard = undefined;          //+ we can actually use that behaviour to know when the game is over
+    this.secondSelectedCard = undefined;
   }
 
-  lose() {
-    if (scoreMultiplier > 1) scoreMultiplier--;
-    cardList.pauseListeningForAll();
+  isNotPair() {
+    if (this.scoreMultiplier > 1) this.scoreMultiplier--;
+    this.cardList.pauseListeningForAll();
     setTimeout(() => {
-      selectedCard.flip();
-      this.flip();
-      selectedCard = undefined;
-      cardList.resumeListeningForAll();
+      this.firstSelectedCard.flip();
+      this.secondSelectedCard.flip();
+      this.firstSelectedCard = undefined;
+      this.secondSelectedCard = undefined;
+      this.cardList.resumeListeningForAll();
     }, 700);
   }
 
-  select() {
-    if (!timer.hasStarted) timer.start();
-    this.flip();
-    if (!selectedCard) selectedCard = this;
-    else if (selectedCard.pair === this.pair) this.win();
-    else this.lose();
-    moves++;
-    updateGameInfos();
+  select(card) {
+    if (!this.timer.hasStarted)
+      this.timer.start();
+
+    card.flip();
+    if (!this.firstSelectedCard)
+      this.firstSelectedCard = card
+    else {
+      this.secondSelectedCard = card;
+      if (this.firstSelectedCard.pair === this.secondSelectedCard.pair)
+        this.isPair();
+      else
+        this.isNotPair();
+    }
+
+    this.interface.update()
+    if (this.cardList.list.length === 0) //Since we remove the Cards from cardList.list at each found pair, we know the game is over when the list is empty
+      this.win();
+  }
+
+  reset() {
+    this.score = 0;
+    this.scoreMultiplier = 10;
+
+    this.firstSelectedCard = undefined;
+    this.secondSelectedCard = undefined;
+  
+    this.interface.reset();
+    this.timer.reset();
+
+    cardsContainer.innerHTML = "";
+    victoryScreen.innerHTML = "";
+
+    this.cardList = new CardList(difficultySettings.x * difficultySettings.y);
   }
 }
 
-let cardList = new CardList(difficultySettings.x * difficultySettings.y); //Creating the object launches the game
+const game = new Game(difficultySettings.x * difficultySettings.y);
 
-/*---------------Chrono---------------*/
-
-const minutes = document.getElementById("minutes");
-const seconds = document.getElementById("seconds");
-
-class Timer {
-  constructor() {
-    this.totalSeconds = 0;
-    this.hasStarted = false;
-    this.interval = null;
-  }
-
-  getTimerString(time) {
-    return time.toString().padStart(2, "0");
-  };
-
-  addSecond() {
-    this.totalSeconds++;
-    seconds.textContent = this.getTimerString(this.totalSeconds % 60);
-    minutes.textContent = this.getTimerString(Math.floor(this.totalSeconds / 60));
-  };
-
-  start() {
-    if (!this.hasStarted) {
-      this.hasStarted = true;
-      this.interval = setInterval(this.addSecond.bind(this), 1000);
-    }
-  };
-
-  stop() {
-    clearInterval(this.interval);
-    this.interval = null;
-  };
-
-  reset() {
-    this.stop();
-    this.hasStarted = false;
-    this.totalSeconds = 0;
-    seconds.textContent = "00";
-    minutes.textContent = "00";
-  };
-};
-
-const timer = new Timer();
-
-/*---------------Interface---------------*/
-
-const updateGameInfos = () => {
-  const scoreSpan = document.getElementById("current-score-span");
-  const movesSpan = document.getElementById("moves-span");
-
-  scoreSpan.textContent = score;
-  movesSpan.textContent = moves;
-};
-
-/*---------------Replay-Button---------------*/
-
-const resetGame = () => {
-  score = 0;
-  moves = 0;
-  numberOfFounds = 0;
-  scoreMultiplier = 10;
-  cardsContainer.innerHTML = "";
-  selectedCard = undefined;
-  timer.reset();
-  victoryScreen.innerHTML = "";
-  updateGameInfos();
-  cardList = new CardList(difficultySettings.x * difficultySettings.y);
-};
-
-replayBtn.addEventListener("click", resetGame);
-
-/*---------------Highest-Score---------------*/
-
-const loadHighScore = () => {
-  const stored = localStorage.getItem("highscore");
-  if (stored) {
-    return parseInt(stored);
-  } else {
-    return 0;
-  }
-};
-// Load the highscore from localStorage
-const saveHighScore = (newScore) => {
-  const currentHighScore = loadHighScore();
-  if (newScore > currentHighScore) {
-    localStorage.setItem("highscore", newScore);
-  }
-};
-// Save the new highscore in localStorage
-// if it's higher than the previous one
-const updateHighScore = (score) => {
-  highestScoreSpan.textContent = score;
-};
-// Update the highscore with the new score
+replayBtn.addEventListener("click", game.reset.bind(game));
