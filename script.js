@@ -8,6 +8,7 @@ const gameSettings = document.getElementById("game-settings");
 const currentScore = document.getElementById("current-score");
 const chrono = document.getElementById("chrono");
 const moveCounter = document.getElementById("move-counter");
+const victoryScreen = document.getElementById("victory-screen");
 const cardsContainer = document.getElementById("cards-container");
 const replayBtn = document.getElementById("replay-btn");
 const theme = "pokemon";
@@ -147,21 +148,26 @@ class Card {
 
   /*-----------------Gameplay-----------------*/
 
+  winGame() {
+    if (score > loadHighScore()) {
+      saveHighScore(score);
+      updateHighScore(score);
+    }
+    timer.stop();
+    victoryScreen.innerHTML += `<strong id="you-won">You won the game in ${moves} moves!</strong>
+    <ul id="victory-infos">
+      <li id="victory-score">Your score: ${score}</li>
+      <li id="victory-time">Your time: ${minutes.textContent}:${seconds.textContent}</li>
+    </ul>`;
+  }
+
   win() {
     score += 5 * scoreMultiplier;
     cardList.remove(this); //We remove both Cards from the list so that they don't became clickable
     cardList.remove(selectedCard); //again when we call resumeListenerForAll method after a lose() call, + we can actually use that behaviour to know when the game is over
     selectedCard = undefined;
-
-    if (score > loadHighScore()) {
-      saveHighScore(score);
-      updateHighScore(score);
-    }
-
-    if (cardList.list.length === 0) {
-      //Since we remove the Cards from cardList.list at each win, we know the game is over when the list is empty
-      console.log("a winner is you");
-    }
+    if (cardList.list.length === 0) //Since we remove the Cards from cardList.list at each win, we know the game is over when the list is empty
+      this.winGame();
   }
 
   lose() {
@@ -176,7 +182,7 @@ class Card {
   }
 
   select() {
-    if (!timerStart) cardClick();
+    if (!timer.hasStarted) timer.start();
     this.flip();
     if (!selectedCard) selectedCard = this;
     else if (selectedCard.pair === this.pair) this.win();
@@ -192,35 +198,46 @@ let cardList = new CardList(difficultySettings.x * difficultySettings.y); //Crea
 
 const minutes = document.getElementById("minutes");
 const seconds = document.getElementById("seconds");
-let totalSeconds = 0;
-let timerStart = false;
-let timerInterval = null;
 
-const start = (timer) => {
-  return timer.toString().padStart(2, "0");
-};
-
-const setTimer = () => {
-  totalSeconds++;
-  seconds.textContent = start(totalSeconds % 60);
-  minutes.textContent = start(Math.floor(totalSeconds / 60));
-};
-
-const cardClick = () => {
-  if (!timerStart) {
-    timerStart = true;
-    timerInterval = setInterval(setTimer, 1000);
+class Timer {
+  constructor() {
+    this.totalSeconds = 0;
+    this.hasStarted = false;
+    this.interval = null;
   }
+
+  getTimerString(time) {
+    return time.toString().padStart(2, "0");
+  };
+
+  addSecond() {
+    this.totalSeconds++;
+    seconds.textContent = this.getTimerString(this.totalSeconds % 60);
+    minutes.textContent = this.getTimerString(Math.floor(this.totalSeconds / 60));
+  };
+
+  start() {
+    if (!this.hasStarted) {
+      this.hasStarted = true;
+      this.interval = setInterval(this.addSecond.bind(this), 1000);
+    }
+  };
+
+  stop() {
+    clearInterval(this.interval);
+    this.interval = null;
+  };
+
+  reset() {
+    this.stop();
+    this.hasStarted = false;
+    this.totalSeconds = 0;
+    seconds.textContent = "00";
+    minutes.textContent = "00";
+  };
 };
 
-const resetTimer = () => {
-  clearInterval(timerInterval);
-  timerStart = false;
-  totalSeconds = 0;
-  seconds.textContent = "00";
-  minutes.textContent = "00";
-  timerInterval = null;
-};
+const timer = new Timer();
 
 /*---------------Interface---------------*/
 
@@ -241,7 +258,8 @@ const resetGame = () => {
   scoreMultiplier = 10;
   cardsContainer.innerHTML = "";
   selectedCard = undefined;
-  resetTimer();
+  timer.reset();
+  victoryScreen.innerHTML = "";
   updateGameInfos();
   cardList = new CardList(difficultySettings.x * difficultySettings.y);
 };
