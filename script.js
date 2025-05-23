@@ -168,7 +168,7 @@ class Card {
   }
 
   select() {
-    if (!timerStart) cardClick();
+    if (!timer.isStart) timer.cardClick();
     this.flip();
     if (!selectedCard) selectedCard = this;
     else if (selectedCard.pair === this.pair) this.win();
@@ -184,35 +184,42 @@ let cardList = new CardList(difficultySettings.x * difficultySettings.y); //Crea
 
 const minutes = document.getElementById("minutes");
 const seconds = document.getElementById("seconds");
-let totalSeconds = 0;
-let timerStart = false;
-let timerInterval = null;
 
-const start = (timer) => {
-  return timer.toString().padStart(2, "0");
-};
-
-const setTimer = () => {
-  totalSeconds++;
-  seconds.textContent = start(totalSeconds % 60);
-  minutes.textContent = start(Math.floor(totalSeconds / 60));
-};
-
-const cardClick = () => {
-  if (!timerStart) {
-    timerStart = true;
-    timerInterval = setInterval(setTimer, 500);
+class Timer {
+  constructor() {
+    this.totalSeconds = 0;
+    this.isStart = false;
+    this.interval = null;
   }
+
+  start(timer) {
+    return timer.toString().padStart(2, "0");
+  };
+
+  setTimer = () => {
+    this.totalSeconds++;
+    seconds.textContent = this.start(this.totalSeconds % 60);
+    minutes.textContent = this.start(Math.floor(this.totalSeconds / 60));
+  };
+
+  cardClick = () => {
+    if (!this.isStart) {
+      this.isStart = true;
+      this.interval = setInterval(this.setTimer, 1000);
+    }
+  };
+
+  reset = () => {
+    clearInterval(this.interval);
+    this.isStart = false;
+    this.totalSeconds = 0;
+    seconds.textContent = "00";
+    minutes.textContent = "00";
+    this.interval = null;
+  };
 };
 
-const resetTimer = () => {
-  clearInterval(timerInterval);
-  timerStart = false;
-  totalSeconds = 0;
-  seconds.textContent = "00";
-  minutes.textContent = "00";
-  timerInterval = null;
-};
+const timer = new Timer();
 
 /*---------------Interface---------------*/
 
@@ -233,7 +240,7 @@ const resetGame = () => {
   scoreMultiplier = 10;
   cardsContainer.innerHTML = "";
   selectedCard = undefined;
-  resetTimer();
+  timer.reset();
   updateGameInfos();
   cardList = new CardList(difficultySettings.x * difficultySettings.y);
 };
