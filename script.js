@@ -117,16 +117,16 @@ class Card {
 
   listen() {
     this.div = document.getElementById(this.id);
-    this.div.addEventListener("click", this.select.bind(this));//bind(this) is mandatory here, without it /this/ points to the div and not the Card in the function's context (could also use a () => {} but it already works so...)
-  }//Saves the HTML element in this.div + sets up the event listener on that div
+    this.div.addEventListener("click", this.select.bind(this)); //bind(this) is mandatory here, without it /this/ points to the div and not the Card in the function's context (could also use a () => {} but it already works so...)
+  } //Saves the HTML element in this.div + sets up the event listener on that div
 
   pauseListening() {
     this.div.style.pointerEvents = "none";
-  }//Suspend the event listener for this particular Card
+  } //Suspend the event listener for this particular Card
 
   resumeListening() {
     this.div.style.pointerEvents = "";
-  }//resumes the event listener for this particular Card
+  } //resumes the event listener for this particular Card
 
   flip() {
     switch (this.isFlip) {
@@ -140,7 +140,7 @@ class Card {
         this.pauseListening();
         this.div.classList.add("flip");
     }
-  }//Depending on the state of the Card, pauses the
+  } //Depending on the state of the Card, pauses the
   // event listener and flip to show, or resumes the
   // event listener and flip to hide
 
@@ -148,10 +148,11 @@ class Card {
 
   win() {
     score += 5 * scoreMultiplier;
-    cardList.remove(this);         //We remove both Cards from the list so that they don't became clickable
-    cardList.remove(selectedCard);//again when we call resumeListenerForAll method after a lose() call, + we can actually use that behaviour to know when the game is over
+    cardList.remove(this); //We remove both Cards from the list so that they don't became clickable
+    cardList.remove(selectedCard); //again when we call resumeListenerForAll method after a lose() call, + we can actually use that behaviour to know when the game is over
     selectedCard = undefined;
-    if (cardList.list.length === 0) { //Since we remove the Cards from cardList.list at each win, we know the game is over when the list is empty
+    if (cardList.list.length === 0) {
+      //Since we remove the Cards from cardList.list at each win, we know the game is over when the list is empty
       console.log("a winner is you");
     }
   }
@@ -201,7 +202,7 @@ const setTimer = () => {
 const cardClick = () => {
   if (!timerStart) {
     timerStart = true;
-    timerInterval = setInterval(setTimer, 500);
+    timerInterval = setInterval(setTimer, 1000);
   }
 };
 
